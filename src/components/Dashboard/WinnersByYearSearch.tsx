@@ -41,7 +41,6 @@ const WinnersByYearSearch: React.FC = () => {
         } catch (error) {
             console.error('Error fetching winners by year:', error);
             setError('Failed to fetch data');
-            throw error;
         } finally {
             setLoading(false);
         }
