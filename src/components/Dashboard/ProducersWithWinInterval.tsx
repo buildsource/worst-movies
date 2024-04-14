@@ -62,6 +62,7 @@ const ProducersWithWinInterval: React.FC = () => {
                         rowKey="producer"
                         loading={loading}
                         onChange={fetchIntervals}
+                        scroll={{ x: 768 }}
                     />
                 </div>
                 <div>
@@ -73,6 +74,7 @@ const ProducersWithWinInterval: React.FC = () => {
                         rowKey="producer"
                         loading={loading}
                         onChange={fetchIntervals}
+                        scroll={{ x: 768 }}
                     />
                 </div>
             </div>

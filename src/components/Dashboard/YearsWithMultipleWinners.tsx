@@ -65,6 +65,7 @@ const YearsWithMultipleWinners: React.FC = () => {
                     setPagination(param);
                     fetchYears()
                 }}
+                scroll={{ x: 768 }}
             />
         </div>
     );

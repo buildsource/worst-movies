@@ -65,6 +65,7 @@ const StudiosWithMostWins: React.FC = () => {
                     setPagination(param);
                     fetchStudios()
                 }}
+                scroll={{ x: 768 }}
             />
         </div>
     );

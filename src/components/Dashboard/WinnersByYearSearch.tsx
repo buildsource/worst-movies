@@ -14,7 +14,7 @@ const WinnersByYearSearch: React.FC = () => {
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [pagination, setPagination] = useState<TablePaginationConfig>({
         current: 1,
-        pageSize: 10,
+        pageSize: 5,
         total: 0
     });
     const [loading, setLoading] = useState<boolean>(false);
@@ -25,10 +25,11 @@ const WinnersByYearSearch: React.FC = () => {
 
             const { current, pageSize } = pagination;
 
-            const {content, totalElements} = await fetchWinnersByYearSearchRepository({
+            const { content, totalElements } = await fetchWinnersByYearSearchRepository({
                 page: current,
                 pageSize,
                 year,
+                winner: true,
             });
 
             setMovies(content);
@@ -104,6 +105,7 @@ const WinnersByYearSearch: React.FC = () => {
                     onChange={e => setYear(e.target.value)}
                     placeholder="Search by year"
                     className="border p-2 rounded flex-1 text-[#fff]"
+                    style={{ minWidth: '20px' }}
                 />
                 <button
                     onClick={() => fetchMovies()}
@@ -122,6 +124,7 @@ const WinnersByYearSearch: React.FC = () => {
                     setPagination(param);
                     fetchMovies()
                 }}
+                scroll={{ x: 768 }}
             />
         </div>
     );
