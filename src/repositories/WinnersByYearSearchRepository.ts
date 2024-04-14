@@ -6,18 +6,22 @@ const API_URL = `${import.meta.env.VITE_API_URL}/backend-java/api/movies`;
 export const fetchWinnersByYearSearchRepository = async (params: IFetchMoviesParams): Promise<IMovieApiResponse> => {
     try {
         const { page, pageSize, year, winner } = params;
-        const yearParam = year ? `&year=${year}` : '';
-
-        console.log('params');
-        console.log(params);
-        console.log('params');
+        const queryParams = new URLSearchParams({
+            page: (page - 1).toString(),
+            size: pageSize.toString(),
+            winner: winner ? winner.toString() : 'true',
+        });
         
+        if (year) 
+            queryParams.append('year', year.toString());
 
-        const response = await axios.get<IMovieApiResponse>(`${API_URL}?page=${page - 1}&size=${pageSize}&winner=${winner}${yearParam}`);
-
+        const response = await axios.get<IMovieApiResponse>(`${API_URL}?${queryParams.toString()}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching winners by year search:', error);
-        throw error;
+        if (axios.isAxiosError(error)) 
+            throw new Error(`Failed to fetch movie data: ${error.response?.status} ${error.response?.statusText}`);
+        else
+            throw new Error('An unexpected error occurred while fetching movie data');
     }
 };

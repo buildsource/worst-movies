@@ -19,7 +19,6 @@ const ProducersWithWinInterval: React.FC = () => {
         } catch (error) {
             console.error('Error fetching producer intervals:', error);
             setError('Failed to fetch data');
-            throw error;
         } finally {
             setLoading(false);
         }
