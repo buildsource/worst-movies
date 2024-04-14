@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu, Button } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined, VideoCameraOutlined, HomeOutlined } from '@ant-design/icons';
-import Dashboard from './pages/Dashboard';
-import WinnersList from './components/Dashboard/WinnersList';
+import Dashboard from '../pages/Dashboard';
+import WinnersList from './List/WinnersList';
 
 const { Header, Sider, Content } = Layout;
+
+
 
 const AppRoutes: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -30,18 +32,21 @@ const AppRoutes: React.FC = () => {
   }, [isMobile]);
 
   const getSiderStyle = () => {
-    if (collapsed) {
+    if (collapsed)
       return { marginLeft: -80 };
-    }
+
     return {};
   };
+
+
+  const selectedKeys = [window.location.pathname === "/movies" ? '2' : '1'];
 
   return (
     <Router>
       <Layout className="h-screen flex flex-col w-full">
         <Sider trigger={null} collapsible collapsed={collapsed} className="h-full" style={getSiderStyle()}>
           <div className='text-white bg-[#141414] border-none' style={{ padding: 24, flex: 1 }}>{import.meta.env.VITE_NOME_APP}</div>
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} className="h-full bg-[#141414]">
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={selectedKeys} className="h-full bg-[#141414]">
             <Menu.Item key="1" icon={<HomeOutlined />}>
               <Link to="/">Dashboard</Link>
             </Menu.Item>
@@ -61,10 +66,12 @@ const AppRoutes: React.FC = () => {
             />
           </Header>
           <Content style={{ margin: '24px 16px', padding: isMobile ? 0 : 24, minHeight: 280, flex: 1 }}>
+            
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/movies" element={<WinnersList />} />
             </Routes>
+
           </Content>
         </Layout>
       </Layout>

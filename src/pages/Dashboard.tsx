@@ -6,7 +6,7 @@ import WinnersByYearSearch from '../components/Dashboard/WinnersByYearSearch';
 
 const Dashboard: React.FC = () => {
     return (
-        <div className="container mx-auto p-4">
+        <div className="mx-auto p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <YearsWithMultipleWinners />
                 <StudiosWithMostWins />

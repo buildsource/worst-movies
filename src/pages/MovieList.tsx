@@ -1,5 +1,5 @@
 import React from 'react';
-import WinnersList from '../components/Dashboard/WinnersList';
+import WinnersList from '../components/List/WinnersList';
 
 const MovieList: React.FC = () => {
     return (
