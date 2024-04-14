@@ -14,7 +14,7 @@ const WinnersByYearSearch: React.FC = () => {
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [pagination, setPagination] = useState<TablePaginationConfig>({
         current: 1,
-        pageSize: 5,
+        pageSize: 10,
         total: 0
     });
     const [loading, setLoading] = useState<boolean>(false);
