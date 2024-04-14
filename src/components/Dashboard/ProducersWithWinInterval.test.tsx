@@ -3,13 +3,22 @@ import { render, screen, waitFor } from '@testing-library/react';
 import ProducersWithWinInterval from './ProducersWithWinInterval';
 import { fetchProducerIntervalsRepository } from '../../repositories/ProducersWithWinIntervalRepository';
 
+
 vi.mock('../../repositories/ProducersWithWinIntervalRepository', () => ({
   fetchProducerIntervalsRepository: vi.fn(),
 }));
 
 
-
 describe('ProducersWithWinInterval', () => {
+
+  it('displays error message on fetch failure', async () => {
+    const error = new Error('Failed to fetch');
+    fetchProducerIntervalsRepository.mockRejectedValue(error);
+    render(<ProducersWithWinInterval />);
+    
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
+    expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+  });
 
 
   it('loads and displays data correctly', async () => {

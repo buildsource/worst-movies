@@ -10,7 +10,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
     transformMode: {
-      web: [/.[tj]sx?$/], // Enable TypeScript for .ts, .tsx files
+      web: [/.[tj]sx?$/],
     },
+    silent: true,
   },
 });

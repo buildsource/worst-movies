@@ -12,7 +12,7 @@ const ProducersWithWinInterval: React.FC = () => {
     const fetchIntervals = async () => {
         try {
             setLoading(true);
-            
+
             const { min, max } = await fetchProducerIntervalsRepository();
             setMinData(min);
             setMaxData(max);
