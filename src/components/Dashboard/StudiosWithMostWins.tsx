@@ -11,12 +11,13 @@ const StudiosWithMostWins: React.FC = () => {
         total: 0,
     });
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
 
     const fetchStudios = async () => {
-        setLoading(true);
-
         try {
+            setLoading(true);
+
             const { totalElements, studios } = await fetchStudiosWithMostWinsRepository();
 
             setStudios(studios);
@@ -26,6 +27,7 @@ const StudiosWithMostWins: React.FC = () => {
             }));
         } catch (error) {
             console.error('Error fetching studios with most wins:', error);
+            setError('Failed to fetch data');
             throw error;
         } finally {
             setLoading(false);
@@ -55,18 +57,25 @@ const StudiosWithMostWins: React.FC = () => {
     return (
         <div className="p-4 bg-[#3b3b3b] shadow rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-[#fff]">Top 3 Studios with Winners</h2>
-            <Table
-                columns={columns}
-                dataSource={studios}
-                rowKey="name"
-                pagination={pagination}
-                loading={loading}
-                onChange={(param: TablePaginationConfig) => {
-                    setPagination(param);
-                    fetchStudios()
-                }}
-                scroll={{ x: 768 }}
-            />
+            {
+                error
+                    ? <p className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                        <strong className="font-bold">Error: </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </p>
+                    : <Table
+                        columns={columns}
+                        dataSource={studios}
+                        rowKey="name"
+                        pagination={pagination}
+                        loading={loading}
+                        onChange={(param: TablePaginationConfig) => {
+                            setPagination(param);
+                            fetchStudios()
+                        }}
+                        scroll={{ x: 768 }}
+                    />
+            }
         </div>
     );
 }

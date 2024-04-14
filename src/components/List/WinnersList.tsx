@@ -21,9 +21,10 @@ const WinnersList: React.FC = () => {
         total: 0
     });
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
-            fetchMovies();
+        fetchMovies();
 
     }, [yearFilter, winnerFilter]);
 
@@ -48,6 +49,7 @@ const WinnersList: React.FC = () => {
             }));
         } catch (error) {
             console.error('Error fetching winners by year:', error);
+            setError('Failed to fetch data');
             throw error;
         } finally {
             setLoading(false);
@@ -59,12 +61,12 @@ const WinnersList: React.FC = () => {
     const handleWinnerChange = (value: string) => setWinnerFilter(value);
 
     const handleTableChange = (newPagination: TablePaginationConfig, filters: IMovie) => {
-        if (!filters.year) 
+        if (!filters.year)
             setYearFilter('');
-        
-        if (!filters.winner) 
+
+        if (!filters.winner)
             setWinnerFilter('');
-        
+
         setPagination(newPagination);
         fetchMovies();
     };
@@ -131,15 +133,23 @@ const WinnersList: React.FC = () => {
     return (
         <div className="p-4 bg-[#3b3b3b] shadow rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-[#fff]">List movies</h2>
-            <Table
-                columns={columns}
-                dataSource={movies}
-                rowKey={record => record.id}
-                pagination={pagination}
-                loading={loading}
-                onChange={handleTableChange}
-                scroll={{ x: 768 }}
-            />
+            {
+                error
+                    ? <p className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                        <strong className="font-bold">Error: </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </p>
+                    :
+                    <Table
+                        columns={columns}
+                        dataSource={movies}
+                        rowKey={record => record.id}
+                        pagination={pagination}
+                        loading={loading}
+                        onChange={handleTableChange}
+                        scroll={{ x: 768 }}
+                    />
+            }
         </div>
     );
 };
