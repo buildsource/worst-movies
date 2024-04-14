@@ -23,7 +23,6 @@ const WinnersList: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        // if (!yearFilter || yearFilter.length === 4 || winnerFilter)
             fetchMovies();
 
     }, [yearFilter, winnerFilter]);
