@@ -13,7 +13,7 @@ interface TablePaginationConfig {
 
 const WinnersList: React.FC = () => {
     const [yearFilter, setYearFilter] = useState<string>('');
-    const [winnerFilter, setWinnerFilter] = useState<string>('');
+    const [winnerFilter, setWinnerFilter] = useState<boolean>(true);
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [pagination, setPagination] = useState<TablePaginationConfig>({
         current: 1,
@@ -26,20 +26,30 @@ const WinnersList: React.FC = () => {
     useEffect(() => {
         fetchMovies();
 
-    }, [yearFilter, winnerFilter]);
+    }, []);
+
+    useEffect(() => {
+        if (yearFilter.length === 4 && /^\d{4}$/.test(yearFilter))
+            fetchMovies();
+
+    }, [yearFilter]);
+
+    useEffect(() => {
+        console.log("Winner Filter Updated:", winnerFilter);  // Debug log to confirm changes
+        fetchMovies();
+    }, [winnerFilter]);
 
     const fetchMovies = async () => {
         try {
             setLoading(true);
 
             const { current, pageSize } = pagination;
-            const winnerParam = winnerFilter === 'Yes' ? true : winnerFilter === 'No' ? false : true;
 
             const { content, totalElements } = await fetchWinnersByYearSearchRepository({
                 page: current,
                 pageSize,
                 year: yearFilter,
-                winner: winnerParam,
+                winner: winnerFilter,
             });
 
             setMovies(content);
@@ -57,14 +67,13 @@ const WinnersList: React.FC = () => {
 
     const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => setYearFilter(e.target.value);
 
-    const handleWinnerChange = (value: string) => setWinnerFilter(value);
+    const handleWinnerChange = (value: string) => {
+        setWinnerFilter(value == 'Yes' ? true : false);
+    }
 
     const handleTableChange = (newPagination: TablePaginationConfig, filters: IMovie) => {
         if (!filters.year)
             setYearFilter('');
-
-        if (!filters.winner)
-            setWinnerFilter('');
 
         setPagination(newPagination);
         fetchMovies();
@@ -89,6 +98,7 @@ const WinnersList: React.FC = () => {
                         value={yearFilter}
                         onChange={handleYearChange}
                         style={{ width: 188, marginBottom: 8, display: 'block' }}
+                        data-testid="year-search-input"
                     />
                 </div>
             ),
@@ -120,6 +130,7 @@ const WinnersList: React.FC = () => {
                         value={winnerFilter}
                         onChange={handleWinnerChange}
                         style={{ width: 188, marginBottom: 8, display: 'block' }}
+                        data-testid="winner-select"
                     >
                         <Option value="Yes">Yes</Option>
                         <Option value="No">No</Option>
@@ -139,6 +150,19 @@ const WinnersList: React.FC = () => {
                         <span className="block sm:inline">{error}</span>
                     </p>
                     :
+                    <>
+                    
+            <h4 className="text-xl font-bold mb-4 text-[#fff]">Year</h4>
+                    <Select
+                        placeholder="Select winner"
+                        value={winnerFilter}
+                        onChange={handleWinnerChange}
+                        style={{ width: 188, marginBottom: 8, display: 'block' }}
+                        data-testid="winner-select2"
+                    >
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
+                    </Select>
                     <Table
                         columns={columns}
                         dataSource={movies}
@@ -148,6 +172,7 @@ const WinnersList: React.FC = () => {
                         onChange={handleTableChange}
                         scroll={{ x: 768 }}
                     />
+                    </>
             }
         </div>
     );

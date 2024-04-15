@@ -6,10 +6,13 @@ const API_URL = `${import.meta.env.VITE_API_URL}/backend-java/api/movies`;
 export const fetchWinnersByYearSearchRepository = async (params: IFetchMoviesParams): Promise<IMovieApiResponse> => {
     try {
         const { page, pageSize, year, winner } = params;
+
+        console.log(winner);
+        
         const queryParams = new URLSearchParams({
             page: (page - 1).toString(),
             size: pageSize.toString(),
-            winner: winner ? winner.toString() : 'true',
+            winner: winner.toString(),
         });
         
         if (year) 
