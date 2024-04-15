@@ -96,6 +96,15 @@ const WinnersByYearSearch: React.FC = () => {
         }
     ];
 
+    const searchByYear = (year: string) => {
+        setPagination({
+            current: 1,
+            pageSize: 5,
+            total: 0
+        });
+        setYear(year);
+    }
+
     return (
         <div className="p-4 bg-[#3b3b3b] shadow rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-[#fff]">List movie winners by year</h2>
@@ -111,7 +120,7 @@ const WinnersByYearSearch: React.FC = () => {
                             <input
                                 type="text"
                                 value={year}
-                                onChange={e => setYear(e.target.value)}
+                                onChange={(e) => searchByYear(e.target.value)}
                                 placeholder="Search by year"
                                 className="border p-2 rounded flex-1 text-[#fff]"
                                 style={{ minWidth: '20px' }}

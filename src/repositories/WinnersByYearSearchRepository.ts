@@ -7,8 +7,6 @@ export const fetchWinnersByYearSearchRepository = async (params: IFetchMoviesPar
     try {
         const { page, pageSize, year, winner } = params;
 
-        console.log(winner);
-        
         const queryParams = new URLSearchParams({
             page: (page - 1).toString(),
             size: pageSize.toString(),

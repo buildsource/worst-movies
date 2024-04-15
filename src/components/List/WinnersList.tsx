@@ -29,13 +29,14 @@ const WinnersList: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (yearFilter.length === 4 && /^\d{4}$/.test(yearFilter))
+        if (
+            yearFilter.length === 0 ||
+            yearFilter.length === 4 && /^\d{4}$/.test(yearFilter))
             fetchMovies();
 
     }, [yearFilter]);
 
     useEffect(() => {
-        console.log("Winner Filter Updated:", winnerFilter);  // Debug log to confirm changes
         fetchMovies();
     }, [winnerFilter]);
 
@@ -65,9 +66,21 @@ const WinnersList: React.FC = () => {
         }
     };
 
-    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => setYearFilter(e.target.value);
+    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPagination({
+            current: 1,
+            pageSize: 5,
+            total: 0
+        });
+        setYearFilter(e.target.value);
+    }
 
     const handleWinnerChange = (value: string) => {
+        setPagination({
+            current: 1,
+            pageSize: 5,
+            total: 0
+        });
         setWinnerFilter(value == 'Yes' ? true : false);
     }
 
@@ -151,27 +164,35 @@ const WinnersList: React.FC = () => {
                     </p>
                     :
                     <>
-                    
-            <h4 className="text-xl font-bold mb-4 text-[#fff]">Year</h4>
-                    <Select
-                        placeholder="Select winner"
-                        value={winnerFilter}
-                        onChange={handleWinnerChange}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                        data-testid="winner-select2"
-                    >
-                        <Option value="Yes">Yes</Option>
-                        <Option value="No">No</Option>
-                    </Select>
-                    <Table
-                        columns={columns}
-                        dataSource={movies}
-                        rowKey={record => record.id}
-                        pagination={pagination}
-                        loading={loading}
-                        onChange={handleTableChange}
-                        scroll={{ x: 768 }}
-                    />
+                        <div className="flex gap-4 items-center mb-4">
+                            <h4 className="text-[100%] font-bold text-white">Year Filter:</h4>
+                            <Input
+                                placeholder="Year filter"
+                                value={yearFilter}
+                                onChange={handleYearChange}
+                                className="w-48"
+                            />
+                            <h4 className="text-[100%] font-bold text-white">Winner Filter:</h4>
+                            <Select
+                                placeholder="Winner filter"
+                                value={winnerFilter}
+                                onChange={handleWinnerChange}
+                                className="w-48"
+                            >
+                                <Option value="Yes">Yes</Option>
+                                <Option value="No">No</Option>
+                            </Select>
+                        </div>
+
+                        <Table
+                            columns={columns}
+                            dataSource={movies}
+                            rowKey={record => record.id}
+                            pagination={pagination}
+                            loading={loading}
+                            onChange={handleTableChange}
+                            scroll={{ x: 768 }}
+                        />
                     </>
             }
         </div>
