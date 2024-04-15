@@ -18,6 +18,7 @@ const WinnersByYearSearch: React.FC = () => {
         total: 0
     });
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     const fetchMovies = async () => {
         try {
@@ -25,10 +26,11 @@ const WinnersByYearSearch: React.FC = () => {
 
             const { current, pageSize } = pagination;
 
-            const {content, totalElements} = await fetchWinnersByYearSearchRepository({
+            const { content, totalElements } = await fetchWinnersByYearSearchRepository({
                 page: current,
                 pageSize,
                 year,
+                winner: true,
             });
 
             setMovies(content);
@@ -38,7 +40,7 @@ const WinnersByYearSearch: React.FC = () => {
             }));
         } catch (error) {
             console.error('Error fetching winners by year:', error);
-            throw error;
+            setError('Failed to fetch data');
         } finally {
             setLoading(false);
         }
@@ -94,35 +96,56 @@ const WinnersByYearSearch: React.FC = () => {
         }
     ];
 
+    const searchByYear = (year: string) => {
+        setPagination({
+            current: 1,
+            pageSize: 5,
+            total: 0
+        });
+        setYear(year);
+    }
+
     return (
         <div className="p-4 bg-[#3b3b3b] shadow rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-[#fff]">List movie winners by year</h2>
-            <div className="mb-4 flex">
-                <input
-                    type="text"
-                    value={year}
-                    onChange={e => setYear(e.target.value)}
-                    placeholder="Search by year"
-                    className="border p-2 rounded flex-1 text-[#fff]"
-                />
-                <button
-                    onClick={() => fetchMovies()}
-                    className="p-2 bg-blue-500 text-white rounded ml-2"
-                >
-                    Search
-                </button>
-            </div>
-            <Table
-                columns={columns}
-                rowKey={record => record.id}
-                dataSource={movies}
-                pagination={pagination}
-                loading={loading}
-                onChange={(param: TablePaginationConfig) => {
-                    setPagination(param);
-                    fetchMovies()
-                }}
-            />
+            {
+                error
+                    ? <p className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                        <strong className="font-bold">Error: </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </p>
+                    :
+                    <>
+                        <div className="mb-4 flex">
+                            <input
+                                type="text"
+                                value={year}
+                                onChange={(e) => searchByYear(e.target.value)}
+                                placeholder="Search by year"
+                                className="border p-2 rounded flex-1 text-[#fff]"
+                                style={{ minWidth: '20px' }}
+                            />
+                            <button
+                                onClick={() => fetchMovies()}
+                                className="p-2 bg-blue-500 text-white rounded ml-2"
+                            >
+                                Search
+                            </button>
+                        </div>
+                        <Table
+                            columns={columns}
+                            rowKey={record => record.id}
+                            dataSource={movies}
+                            pagination={pagination}
+                            loading={loading}
+                            onChange={(param: TablePaginationConfig) => {
+                                setPagination(param);
+                                fetchMovies()
+                            }}
+                            scroll={{ x: 768 }}
+                        />
+                    </>
+            }
         </div>
     );
 };

@@ -11,6 +11,7 @@ export interface IFetchMoviesParams {
     page: number;
     pageSize: number;
     year?: string;
+    winner?: boolean;
 }
 
 export interface IMovieApiResponse {
