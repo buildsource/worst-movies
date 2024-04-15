@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, Mock } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import ProducersWithWinInterval from './ProducersWithWinInterval';
 import { fetchProducerIntervalsRepository } from '../../repositories/ProducersWithWinIntervalRepository';
@@ -15,7 +15,7 @@ describe('ProducersWithWinInterval', () => {
   it('displays error message on fetch failure', async () => {
     const error = new Error('Failed to fetch');
 
-    fetchProducerIntervalsRepository.mockRejectedValue(error);
+    (fetchProducerIntervalsRepository as Mock).mockRejectedValue(error);
     render(<ProducersWithWinInterval />);
 
     await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
@@ -26,10 +26,11 @@ describe('ProducersWithWinInterval', () => {
   it('loads and displays data correctly', async () => {
     const testData: IProducerIntervalResponse = {
       min: [{ producer: 'John Doe', interval: 2, previousWin: 1998, followingWin: 2000 }],
-      max: [{ producer: 'Jane Smith', interval: 10, previousWin: 1985, followingWin: 1995 }]
+      max: [{ producer: 'Jane Smith', interval: 10, previousWin: 1985, followingWin: 1995 }],
+      totalElements: 2
     };
 
-    fetchProducerIntervalsRepository.mockResolvedValue(testData);
+    (fetchProducerIntervalsRepository as Mock).mockResolvedValue(testData);
     render(<ProducersWithWinInterval />);
 
     await waitFor(() => {

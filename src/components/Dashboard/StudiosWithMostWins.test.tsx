@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import StudiosWithMostWins from './StudiosWithMostWins';
 import { fetchStudiosWithMostWinsRepository } from '../../repositories/StudiosWithMostWinsRepository';
-import { IStudioResponse } from '../../interfaces/Studio';
+import { IStudio } from '../../interfaces/Studio';
 
 vi.mock('../../repositories/StudiosWithMostWinsRepository');
 
-const mockStudios: IStudioResponse[] = [
+const mockStudios: IStudio[] = [
   { name: 'Studio Ghibli', winCount: 15 },
   { name: 'Pixar', winCount: 12 },
   { name: 'DreamWorks', winCount: 8 },
@@ -21,7 +21,7 @@ const mockStudios: IStudioResponse[] = [
 
 describe('StudiosWithMostWins Component', () => {
   beforeEach(() => {
-    (fetchStudiosWithMostWinsRepository as vi.Mock).mockResolvedValue({
+    (fetchStudiosWithMostWinsRepository as Mock).mockResolvedValue({
       totalElements: mockStudios.length,
       studios: mockStudios
     });
@@ -37,7 +37,7 @@ describe('StudiosWithMostWins Component', () => {
   it('exibe uma mensagem de erro quando a requisição falha', async () => {
     const error = new Error('Failed to fetch');
 
-    (fetchStudiosWithMostWinsRepository as vi.Mock).mockRejectedValue(error);
+    (fetchStudiosWithMostWinsRepository as Mock).mockRejectedValue(error);
     render(<StudiosWithMostWins />);
     await waitFor(() => expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument());
   });
