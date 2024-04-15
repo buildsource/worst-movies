@@ -20,7 +20,7 @@ const mockMovies: IMovie[] = [
 ];
 
 
-describe('WinnersList Component', () => {
+describe('WinnersList Component Tests', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (fetchWinnersByYearSearchRepository as Mock).mockResolvedValue({
@@ -29,14 +29,14 @@ describe('WinnersList Component', () => {
         });
     });
 
-    it('renders the table and loads initial data successfully', async () => {
+    it('should render the table and load initial data successfully', async () => {
         render(<WinnersList />);
         await waitFor(() => {
             expect(screen.getByText('Movie One')).toBeInTheDocument();
         });
     });
 
-    it('displays an error message when the data fetch fails', async () => {
+    it('should display an error message when data fetch fails', async () => {
         (fetchWinnersByYearSearchRepository as Mock).mockRejectedValue(new Error('Failed to fetch'));
         render(<WinnersList />);
         await waitFor(() => {
@@ -44,7 +44,7 @@ describe('WinnersList Component', () => {
         });
     });
 
-    it('checks sorting functionality by title', async () => {
+    it('should allow sorting by title', async () => {
         render(<WinnersList />);
         await waitFor(() => screen.getByText('Movie One'));
         const titleHeader = screen.getByText('Title');
@@ -55,7 +55,7 @@ describe('WinnersList Component', () => {
         });
     });
 
-    it('tests pagination functionality', async () => {
+    it('should support pagination functionality', async () => {
         render(<WinnersList />);
 
         await waitFor(() => expect(screen.getByText('2019')).toBeInTheDocument());
@@ -71,7 +71,7 @@ describe('WinnersList Component', () => {
         });
     });
 
-    it('allows setting filters from the dropdown and updates the table', async () => {
+    it('should update the table when setting filters from the dropdown', async () => {
         render(<WinnersList />);
 
         const filterIcons = screen.getAllByLabelText('filter');
@@ -98,11 +98,11 @@ describe('WinnersList Component', () => {
         });
 
         fireEvent.mouseDown(screen.getByRole('combobox'));
-        const optionYes = await screen.findByRole('option', { name: 'No' });
-        fireEvent.click(optionYes);
+        const optionNo = await screen.findByRole('option', { name: 'No' });
+        fireEvent.click(optionNo);
 
         await waitFor(() => {
-            mockMovies.filter(movie => movie.winner).forEach(movie => {
+            mockMovies.filter(movie => !movie.winner).forEach(movie => {
                 expect(screen.getByText(movie.title)).toBeInTheDocument();
             });
         });
@@ -126,3 +126,4 @@ describe('WinnersList Component', () => {
         });
     });
 });
+

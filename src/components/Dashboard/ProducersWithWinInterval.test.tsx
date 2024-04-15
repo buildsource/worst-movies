@@ -10,11 +10,10 @@ vi.mock('../../repositories/ProducersWithWinIntervalRepository', () => ({
 }));
 
 
-describe('ProducersWithWinInterval', () => {
+describe('ProducersWithWinInterval Component Tests', () => {
 
-  it('displays error message on fetch failure', async () => {
+  it('should display an error message when data fetching fails', async () => {
     const error = new Error('Failed to fetch');
-
     (fetchProducerIntervalsRepository as Mock).mockRejectedValue(error);
     render(<ProducersWithWinInterval />);
 
@@ -22,8 +21,7 @@ describe('ProducersWithWinInterval', () => {
     expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
   });
 
-
-  it('loads and displays data correctly', async () => {
+  it('should load and display the producer interval data correctly', async () => {
     const testData: IProducerIntervalResponse = {
       min: [{ producer: 'John Doe', interval: 2, previousWin: 1998, followingWin: 2000 }],
       max: [{ producer: 'Jane Smith', interval: 10, previousWin: 1985, followingWin: 1995 }],

@@ -19,7 +19,8 @@ const mockStudios: IStudio[] = [
   { name: 'Warner Bros. Animation', winCount: 6 }
 ];
 
-describe('StudiosWithMostWins Component', () => {
+
+describe('StudiosWithMostWins Component Tests', () => {
   beforeEach(() => {
     (fetchStudiosWithMostWinsRepository as Mock).mockResolvedValue({
       totalElements: mockStudios.length,
@@ -27,22 +28,25 @@ describe('StudiosWithMostWins Component', () => {
     });
   });
 
-  it('carrega e exibe a tabela de estúdios com sucesso', async () => {
+  it('should render the table and load initial studio data successfully', async () => {
     render(<StudiosWithMostWins />);
-    await waitFor(() => expect(screen.getByText('Studio Ghibli')).toBeInTheDocument());
-    expect(screen.getByText('15')).toBeInTheDocument();
-    expect(screen.getByText('Pixar')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Studio Ghibli')).toBeInTheDocument();
+      expect(screen.getByText('15')).toBeInTheDocument();
+      expect(screen.getByText('Pixar')).toBeInTheDocument();
+    });
   });
 
-  it('exibe uma mensagem de erro quando a requisição falha', async () => {
+  it('should display an error message when the data fetch fails', async () => {
     const error = new Error('Failed to fetch');
-
     (fetchStudiosWithMostWinsRepository as Mock).mockRejectedValue(error);
     render(<StudiosWithMostWins />);
-    await waitFor(() => expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+    });
   });
 
-  it('verifica a funcionalidade de ordenação', async () => {
+  it('should verify the sorting functionality by studio name', async () => {
     render(<StudiosWithMostWins />);
     await waitFor(() => screen.getByText('Studio Ghibli'));
     const nameHeader = screen.getByText('Studio Name');
@@ -53,19 +57,17 @@ describe('StudiosWithMostWins Component', () => {
     });
   });
 
-  it('testa a funcionalidade de paginação', async () => {
+  it('should test the pagination functionality effectively', async () => {
     render(<StudiosWithMostWins />);
-
     await waitFor(() => expect(screen.getByText('Studio Ghibli')).toBeInTheDocument());
 
     const nextPageButton = screen.getByTitle('Next Page');
     expect(nextPageButton).not.toBeDisabled();
 
     fireEvent.click(nextPageButton);
-
     await waitFor(() => {
       expect(screen.getByText('Cartoon Network Studios')).toBeInTheDocument();
-      expect(screen.getByText('6')).toBeInTheDocument(); 
+      expect(screen.getByText('6')).toBeInTheDocument();
     });
   });
 });

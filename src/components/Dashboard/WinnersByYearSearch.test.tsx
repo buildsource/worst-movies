@@ -1,48 +1,49 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import WinnersByYearSearch from './WinnersByYearSearch';
 import { fetchWinnersByYearSearchRepository } from '../../repositories/WinnersByYearSearchRepository';
+import { IMovie } from '../../interfaces/Movie';
 
 vi.mock('../../repositories/WinnersByYearSearchRepository');
 
-const mockMovies = [
-    { id: '1', title: 'Movie One', year: 2019, studios: ['Studio One'], producers: ['Producer One'], winner: true },
-    { id: '2', title: 'Movie Two', year: 2018, studios: ['Studio Two'], producers: ['Producer Two'], winner: true },
-    { id: '3', title: 'Movie Three', year: 2017, studios: ['Studio Three'], producers: ['Producer Three'], winner: true },
-    { id: '4', title: 'Movie Four', year: 2016, studios: ['Studio Four'], producers: ['Producer Four'], winner: true },
-    { id: '5', title: 'Movie Five', year: 2015, studios: ['Studio Five'], producers: ['Producer Five'], winner: true },
-    { id: '6', title: 'Movie Six', year: 2014, studios: ['Studio Six'], producers: ['Producer Six'], winner: true },
-    { id: '7', title: 'Movie Seven', year: 2013, studios: ['Studio Seven'], producers: ['Producer Seven'], winner: true },
-    { id: '8', title: 'Movie Eight', year: 2012, studios: ['Studio Eight'], producers: ['Producer Eight'], winner: true },
-    { id: '9', title: 'Movie Nine', year: 2011, studios: ['Studio Nine'], producers: ['Producer Nine'], winner: true },
-    { id: '10', title: 'Movie Ten', year: 2010, studios: ['Studio Ten'], producers: ['Producer Ten'], winner: true }
+const mockMovies: IMovie[] = [
+    { id: 1, title: 'Movie One', year: 2019, studios: ['Studio One'], producers: ['Producer One'], winner: true },
+    { id: 2, title: 'Movie Two', year: 2018, studios: ['Studio Two'], producers: ['Producer Two'], winner: true },
+    { id: 3, title: 'Movie Three', year: 2017, studios: ['Studio Three'], producers: ['Producer Three'], winner: true },
+    { id: 4, title: 'Movie Four', year: 2016, studios: ['Studio Four'], producers: ['Producer Four'], winner: true },
+    { id: 5, title: 'Movie Five', year: 2015, studios: ['Studio Five'], producers: ['Producer Five'], winner: true },
+    { id: 6, title: 'Movie Six', year: 2014, studios: ['Studio Six'], producers: ['Producer Six'], winner: true },
+    { id: 7, title: 'Movie Seven', year: 2013, studios: ['Studio Seven'], producers: ['Producer Seven'], winner: true },
+    { id: 8, title: 'Movie Eight', year: 2012, studios: ['Studio Eight'], producers: ['Producer Eight'], winner: true },
+    { id: 9, title: 'Movie Nine', year: 2011, studios: ['Studio Nine'], producers: ['Producer Nine'], winner: true },
+    { id: 10, title: 'Movie Ten', year: 2010, studios: ['Studio Ten'], producers: ['Producer Ten'], winner: true }
 ];
 
-describe('WinnersByYearSearch Component', () => {
+describe('WinnersByYearSearch Component Tests', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (fetchWinnersByYearSearchRepository as any).mockResolvedValue({
+        (fetchWinnersByYearSearchRepository as Mock).mockResolvedValue({
             content: mockMovies,
             totalElements: mockMovies.length
         });
     });
 
-    it('renders the table and loads initial movie winners data', async () => {
+    it('should render the table and load initial movie winners data successfully', async () => {
         render(<WinnersByYearSearch />);
         await waitFor(() => {
             expect(screen.getByText('Movie One')).toBeInTheDocument();
         });
     });
 
-    it('displays an error message when data fetch fails', async () => {
-        (fetchWinnersByYearSearchRepository as any).mockRejectedValue(new Error('Failed to fetch'));
+    it('should display an error message when the data fetch fails', async () => {
+        (fetchWinnersByYearSearchRepository as Mock).mockRejectedValue(new Error('Failed to fetch'));
         render(<WinnersByYearSearch />);
         await waitFor(() => {
             expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
         });
     });
 
-    it('checks sorting functionality', async () => {
+    it('should verify the sorting functionality by year', async () => {
         render(<WinnersByYearSearch />);
         await waitFor(() => screen.getByText('Movie One'));
         const yearHeader = screen.getByText('Year');
@@ -53,22 +54,22 @@ describe('WinnersByYearSearch Component', () => {
         });
     });
 
-    it('tests pagination functionality', async () => {
+    it('should test the pagination functionality effectively', async () => {
         render(<WinnersByYearSearch />);
         await waitFor(() => expect(screen.getByText('Movie One')).toBeInTheDocument());
 
         const nextPageButton = screen.getByTitle('Next Page');
         expect(nextPageButton).not.toBeDisabled();
-    
+
         fireEvent.click(nextPageButton);
-    
+
         await waitFor(() => {
-          expect(screen.getByText('Movie Seven')).toBeInTheDocument();
-          expect(screen.getByText('2013')).toBeInTheDocument(); 
+            expect(screen.getByText('Movie Seven')).toBeInTheDocument();
+            expect(screen.getByText('2013')).toBeInTheDocument();
         });
     });
 
-    it('allows searching by year and updates table', async () => {
+    it('should allow searching by year and update the table accordingly', async () => {
         render(<WinnersByYearSearch />);
         const searchInput = screen.getByPlaceholderText('Search by year');
         const searchButton = screen.getByText('Search');
