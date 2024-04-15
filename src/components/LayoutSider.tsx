@@ -65,7 +65,7 @@ const AppRoutes: React.FC = () => {
                             className='text-white bg-[#141414] border-none'
                         />
                     </Header>
-                    <Content style={{ margin: '24px 16px', padding: isMobile ? 0 : 24, minHeight: 280, flex: 1 }}>
+                    <Content style={{ margin: '24px 16px', padding: isMobile ? 0 : 24, minHeight: 280, flex: 1, overflowY: 'auto' }}>
 
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
