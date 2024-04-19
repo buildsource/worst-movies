@@ -4,9 +4,9 @@ import WinnersList from '../components/List/WinnersList';
 const MovieList: React.FC = () => {
     return (
         <div className="container mx-auto p-4">
-                <WinnersList/>
+            <WinnersList />
         </div>
     );
-}
+};
 
 export default MovieList;

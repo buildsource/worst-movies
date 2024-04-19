@@ -5,7 +5,6 @@ export interface IProducerInterval {
     followingWin: number;
 }
 
-
 export interface IProducerIntervalResponse {
     min: IProducerInterval[];
     max: IProducerInterval[];
