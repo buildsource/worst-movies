@@ -6,9 +6,9 @@ beforeEach(() => {
     window.getComputedStyle = vi.fn().mockImplementation(() => ({
         getPropertyValue: () => {
             return '';
-        }
+        },
     }));
-    window.matchMedia = vi.fn().mockImplementation(query => ({
+    window.matchMedia = vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,

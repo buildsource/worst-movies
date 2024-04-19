@@ -4,15 +4,15 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // Vitest configuration
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
-    transformMode: {
-      web: [/.[tj]sx?$/],
+    plugins: [react(), tsconfigPaths()],
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.ts',
+        transformMode: {
+            web: [/.[tj]sx?$/],
+        },
+        silent: true,
+        // reporters: 'verbose',
     },
-    silent: true,
-    // reporters: 'verbose',
-  },
 });

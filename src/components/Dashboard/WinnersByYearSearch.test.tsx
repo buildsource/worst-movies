@@ -7,16 +7,86 @@ import { IMovie } from '../../interfaces/Movie';
 vi.mock('../../repositories/WinnersByYearSearchRepository');
 
 const mockMovies: IMovie[] = [
-    { id: 1, title: 'Movie One', year: 2019, studios: ['Studio One'], producers: ['Producer One'], winner: true },
-    { id: 2, title: 'Movie Two', year: 2018, studios: ['Studio Two'], producers: ['Producer Two'], winner: true },
-    { id: 3, title: 'Movie Three', year: 2017, studios: ['Studio Three'], producers: ['Producer Three'], winner: true },
-    { id: 4, title: 'Movie Four', year: 2016, studios: ['Studio Four'], producers: ['Producer Four'], winner: true },
-    { id: 5, title: 'Movie Five', year: 2015, studios: ['Studio Five'], producers: ['Producer Five'], winner: true },
-    { id: 6, title: 'Movie Six', year: 2014, studios: ['Studio Six'], producers: ['Producer Six'], winner: true },
-    { id: 7, title: 'Movie Seven', year: 2013, studios: ['Studio Seven'], producers: ['Producer Seven'], winner: true },
-    { id: 8, title: 'Movie Eight', year: 2012, studios: ['Studio Eight'], producers: ['Producer Eight'], winner: true },
-    { id: 9, title: 'Movie Nine', year: 2011, studios: ['Studio Nine'], producers: ['Producer Nine'], winner: true },
-    { id: 10, title: 'Movie Ten', year: 2010, studios: ['Studio Ten'], producers: ['Producer Ten'], winner: true }
+    {
+        id: 1,
+        title: 'Movie One',
+        year: 2019,
+        studios: ['Studio One'],
+        producers: ['Producer One'],
+        winner: true,
+    },
+    {
+        id: 2,
+        title: 'Movie Two',
+        year: 2018,
+        studios: ['Studio Two'],
+        producers: ['Producer Two'],
+        winner: true,
+    },
+    {
+        id: 3,
+        title: 'Movie Three',
+        year: 2017,
+        studios: ['Studio Three'],
+        producers: ['Producer Three'],
+        winner: true,
+    },
+    {
+        id: 4,
+        title: 'Movie Four',
+        year: 2016,
+        studios: ['Studio Four'],
+        producers: ['Producer Four'],
+        winner: true,
+    },
+    {
+        id: 5,
+        title: 'Movie Five',
+        year: 2015,
+        studios: ['Studio Five'],
+        producers: ['Producer Five'],
+        winner: true,
+    },
+    {
+        id: 6,
+        title: 'Movie Six',
+        year: 2014,
+        studios: ['Studio Six'],
+        producers: ['Producer Six'],
+        winner: true,
+    },
+    {
+        id: 7,
+        title: 'Movie Seven',
+        year: 2013,
+        studios: ['Studio Seven'],
+        producers: ['Producer Seven'],
+        winner: true,
+    },
+    {
+        id: 8,
+        title: 'Movie Eight',
+        year: 2012,
+        studios: ['Studio Eight'],
+        producers: ['Producer Eight'],
+        winner: true,
+    },
+    {
+        id: 9,
+        title: 'Movie Nine',
+        year: 2011,
+        studios: ['Studio Nine'],
+        producers: ['Producer Nine'],
+        winner: true,
+    },
+    {
+        id: 10,
+        title: 'Movie Ten',
+        year: 2010,
+        studios: ['Studio Ten'],
+        producers: ['Producer Ten'],
+        winner: true,
+    },
 ];
 
 describe('WinnersByYearSearch Component Tests', () => {
@@ -24,7 +94,7 @@ describe('WinnersByYearSearch Component Tests', () => {
         vi.clearAllMocks();
         (fetchWinnersByYearSearchRepository as Mock).mockResolvedValue({
             content: mockMovies,
-            totalElements: mockMovies.length
+            totalElements: mockMovies.length,
         });
     });
 
@@ -36,7 +106,9 @@ describe('WinnersByYearSearch Component Tests', () => {
     });
 
     it('should display an error message when the data fetch fails', async () => {
-        (fetchWinnersByYearSearchRepository as Mock).mockRejectedValue(new Error('Failed to fetch'));
+        (fetchWinnersByYearSearchRepository as Mock).mockRejectedValue(
+            new Error('Failed to fetch'),
+        );
         render(<WinnersByYearSearch />);
         await waitFor(() => {
             expect(screen.getByText(/data/i)).toBeInTheDocument();
@@ -45,7 +117,7 @@ describe('WinnersByYearSearch Component Tests', () => {
 
     it('should verify the sorting functionality by year', async () => {
         render(<WinnersByYearSearch />);
-        
+
         const searchButton = screen.getByText(/Search/i);
         fireEvent.click(searchButton);
 
