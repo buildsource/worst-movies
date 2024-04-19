@@ -16,7 +16,7 @@ export const fetchWinnersByYearSearchRepository = async (params: IFetchMoviesPar
             queryParams.append('winner', winner.toString());
 
         if (year !== '')
-            queryParams.append('year', year.toString());
+            queryParams.append('year', year?.toString() || '');
 
         const response = await axios.get<IMovieApiResponse>(`${API_URL}?${queryParams.toString()}`);
         console.log(response.config.url);

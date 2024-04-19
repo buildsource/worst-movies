@@ -13,6 +13,6 @@ export default defineConfig({
       web: [/.[tj]sx?$/],
     },
     silent: true,
-    reporters: 'verbose'
+    // reporters: 'verbose',
   },
 });

@@ -94,10 +94,7 @@ const WinnersList: React.FC = () => {
     ];
 
     useEffect(() => {
-        return () => {
-            fetchMovies(yearFilter, winnerFilter, initialPagination);
-        }
-
+        fetchMovies(yearFilter, winnerFilter, initialPagination);
     }, []);
 
     return (
@@ -119,9 +116,9 @@ const WinnersList: React.FC = () => {
                                 onChange={handleYearChange}
                                 className="w-48"
                             />
-                            <h4 className="text-[100%] font-bold text-white">Winner Filter:</h4>
+                            <h4 className="text-[100%] font-bold text-white">Filter by Winner:</h4>
                             <Select
-                                placeholder="Winner filter"
+                                placeholder="Filter by Winner"
                                 value={winnerFilter}
                                 onChange={handleWinnerChange}
                                 className="w-48"
