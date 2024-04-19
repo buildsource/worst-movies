@@ -10,17 +10,21 @@ export const fetchWinnersByYearSearchRepository = async (params: IFetchMoviesPar
         const queryParams = new URLSearchParams({
             page: (page - 1).toString(),
             size: pageSize.toString(),
-            winner: winner.toString(),
         });
-        
-        if (year) 
+
+        if (winner !== undefined)
+            queryParams.append('winner', winner.toString());
+
+        if (year !== '')
             queryParams.append('year', year.toString());
 
         const response = await axios.get<IMovieApiResponse>(`${API_URL}?${queryParams.toString()}`);
+        console.log(response.config.url);
+
         return response.data;
     } catch (error) {
         console.error('Error fetching winners by year search:', error);
-        if (axios.isAxiosError(error)) 
+        if (axios.isAxiosError(error))
             throw new Error(`Failed to fetch movie data: ${error.response?.status} ${error.response?.statusText}`);
         else
             throw new Error('An unexpected error occurred while fetching movie data');

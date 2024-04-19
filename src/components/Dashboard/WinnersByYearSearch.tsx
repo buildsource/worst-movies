@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Table } from 'antd';
 import { IMovie } from '../../interfaces/Movie';
 import { fetchWinnersByYearSearchRepository } from '../../repositories/WinnersByYearSearchRepository';
+import { SearchOutlined } from '@ant-design/icons';
 
 interface TablePaginationConfig {
     current: number;
@@ -22,6 +23,10 @@ const WinnersByYearSearch: React.FC = () => {
 
     const fetchMovies = async () => {
         try {
+            setMovies([]);
+
+            if (year.length !== 4 || !/^\d{4}$/.test(year)) return;
+
             setLoading(true);
 
             const { current, pageSize } = pagination;
@@ -46,16 +51,12 @@ const WinnersByYearSearch: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchMovies();
-    }, []);
-
     const columns = [
         {
-            title: 'Title',
-            dataIndex: 'title',
-            key: 'title',
-            sorter: (a: IMovie, b: IMovie) => a.title.localeCompare(b.title),
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a: IMovie, b: IMovie) => Number(a.id) - Number(b.id),
         },
         {
             title: 'Year',
@@ -64,36 +65,11 @@ const WinnersByYearSearch: React.FC = () => {
             sorter: (a: IMovie, b: IMovie) => a.year - b.year,
         },
         {
-            title: 'Studios',
-            dataIndex: 'studios',
-            key: 'studios',
-            render: (studios: string[]) => studios.join(', '),
-            sorter: (a: IMovie, b: IMovie) => {
-                const studioA = a.studios.sort().join(', ');
-                const studioB = b.studios.sort().join(', ');
-                return studioA.localeCompare(studioB);
-            },
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+            sorter: (a: IMovie, b: IMovie) => a.title.localeCompare(b.title),
         },
-        {
-            title: 'Producers',
-            dataIndex: 'producers',
-            key: 'producers',
-            render: (producers: string[]) => producers.join(', '),
-            sorter: (a: IMovie, b: IMovie) => {
-                const producerA = a.producers.sort().join(', ');
-                const producerB = b.producers.sort().join(', ');
-                return producerA.localeCompare(producerB);
-            },
-        },
-        {
-            title: 'Winner',
-            dataIndex: 'winner',
-            key: 'winner',
-            render: (winner: string) => winner ? 'Yes' : 'No',
-            sorter: (a: IMovie, b: IMovie) => {
-                return Number(a.winner) - Number(b.winner);
-            },
-        }
     ];
 
     const searchByYear = (year: string) => {
@@ -118,18 +94,18 @@ const WinnersByYearSearch: React.FC = () => {
                     <>
                         <div className="mb-4 flex">
                             <input
-                                type="text"
+                                type="number"
                                 value={year}
                                 onChange={(e) => searchByYear(e.target.value)}
                                 placeholder="Search by year"
-                                className="border p-2 rounded flex-1 text-[#fff]"
+                                className="border p-2 rounded flex-1 text-[#fff] bg-[#3b3b3b]"
                                 style={{ minWidth: '20px' }}
                             />
                             <button
                                 onClick={() => fetchMovies()}
                                 className="p-2 bg-blue-500 text-white rounded ml-2"
                             >
-                                Search
+                                <SearchOutlined color='#fff' /> Search
                             </button>
                         </div>
                         <Table

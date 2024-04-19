@@ -47,7 +47,7 @@ const YearsWithMultipleWinners: React.FC = () => {
             sorter: (a: IYearData, b: IYearData) => a.year - b.year,
         },
         {
-            title: 'Winner Count',
+            title: 'Win Count',
             dataIndex: 'winnerCount',
             key: 'winnerCount',
             sorter: (a: IYearData, b: IYearData) => a.winnerCount - b.winnerCount,

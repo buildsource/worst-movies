@@ -11,53 +11,32 @@ interface TablePaginationConfig {
     total: number;
 }
 
+const initialPagination: TablePaginationConfig = {
+    current: 1,
+    pageSize: 5,
+    total: 0
+}
+
 const WinnersList: React.FC = () => {
-    const [yearFilter, setYearFilter] = useState<string>('');
-    const [winnerFilter, setWinnerFilter] = useState<boolean>(true);
+    const [yearFilter, setYearFilter] = useState('');
+    const [winnerFilter, setWinnerFilter] = useState('');
     const [movies, setMovies] = useState<IMovie[]>([]);
-    const [pagination, setPagination] = useState<TablePaginationConfig>({
-        current: 1,
-        pageSize: 10,
-        total: 0
-    });
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>('');
+    const [pagination, setPagination] = useState(initialPagination);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    useEffect(() => {
-        fetchMovies();
-
-    }, []);
-
-    useEffect(() => {
-        if (
-            yearFilter.length === 0 ||
-            yearFilter.length === 4 && /^\d{4}$/.test(yearFilter))
-            fetchMovies();
-
-    }, [yearFilter]);
-
-    useEffect(() => {
-        fetchMovies();
-    }, [winnerFilter]);
-
-    const fetchMovies = async () => {
+    const fetchMovies = async (year: string, winner: string, pagination: TablePaginationConfig) => {
+        setLoading(true);
         try {
-            setLoading(true);
-
             const { current, pageSize } = pagination;
-
-            const { content, totalElements } = await fetchWinnersByYearSearchRepository({
+            const response = await fetchWinnersByYearSearchRepository({
                 page: current,
                 pageSize,
-                year: yearFilter,
-                winner: winnerFilter,
+                year,
+                winner: winner === 'Yes' ? true : winner === 'No' ? false : undefined,
             });
-
-            setMovies(content);
-            setPagination(prev => ({
-                ...prev,
-                total: totalElements,
-            }));
+            setMovies(response.content);
+            setPagination(prev => ({ ...prev, total: response.totalElements }));
         } catch (error) {
             console.error('Error fetching winners by year:', error);
             setError('Failed to fetch data');
@@ -67,107 +46,75 @@ const WinnersList: React.FC = () => {
     };
 
     const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPagination({
-            current: 1,
-            pageSize: 5,
-            total: 0
-        });
-        setYearFilter(e.target.value);
-    }
+        const newYear = e.target.value;
+        setYearFilter(newYear);
+        if (newYear.length === 0 || (newYear.length === 4 && /^\d{4}$/.test(newYear))) {
+            setPagination(initialPagination);
+            fetchMovies(newYear, winnerFilter, initialPagination);
+        }
+    };
 
     const handleWinnerChange = (value: string) => {
-        setPagination({
-            current: 1,
-            pageSize: 5,
-            total: 0
-        });
-        setWinnerFilter(value == 'Yes' ? true : false);
+        setWinnerFilter(value);
+        setPagination(initialPagination);
+        fetchMovies(yearFilter, value, initialPagination);
     }
 
-    const handleTableChange = (newPagination: TablePaginationConfig, filters: IMovie) => {
-        if (!filters.year)
-            setYearFilter('');
-
+    const handleTableChange = (newPagination: TablePaginationConfig) => {
         setPagination(newPagination);
-        fetchMovies();
+        fetchMovies(yearFilter, winnerFilter, newPagination);
     };
 
     const columns = [
         {
-            title: 'Title',
-            dataIndex: 'title',
-            key: 'title',
-            sorter: (a: IMovie, b: IMovie) => a.title.localeCompare(b.title),
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a: IMovie, b: IMovie) => Number(a.id) - Number(b.id),
         },
         {
             title: 'Year',
             dataIndex: 'year',
             key: 'year',
-            sorter: (a: IMovie, b: IMovie) => a.year - b.year,
-            filterDropdown: () => (
-                <div style={{ padding: 8 }}>
-                    <Input
-                        placeholder="Search year"
-                        value={yearFilter}
-                        onChange={handleYearChange}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                        data-testid="year-search-input"
-                    />
-                </div>
-            ),
+            sorter: (a: IMovie, b: IMovie) => a.year - b.year
         },
         {
-            title: 'Studios',
-            dataIndex: 'studios',
-            key: 'studios',
-            render: (studios: string[]) => studios.join(', '),
-            sorter: (a: IMovie, b: IMovie) => a.studios.sort().join(', ').localeCompare(b.studios.sort().join(', ')),
-        },
-        {
-            title: 'Producers',
-            dataIndex: 'producers',
-            key: 'producers',
-            render: (producers: string[]) => producers.join(', '),
-            sorter: (a: IMovie, b: IMovie) => a.producers.sort().join(', ').localeCompare(b.producers.sort().join(', ')),
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+            sorter: (a: IMovie, b: IMovie) => a.title.localeCompare(b.title)
         },
         {
             title: 'Winner',
             dataIndex: 'winner',
             key: 'winner',
             render: (winner: boolean) => (winner ? 'Yes' : 'No'),
-            sorter: (a: IMovie, b: IMovie) => Number(a.winner) - Number(b.winner),
-            filterDropdown: () => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        placeholder="Select winner"
-                        value={winnerFilter}
-                        onChange={handleWinnerChange}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                        data-testid="winner-select"
-                    >
-                        <Option value="Yes">Yes</Option>
-                        <Option value="No">No</Option>
-                    </Select>
-                </div>
-            ),
-        }
+            sorter: (a: IMovie, b: IMovie) => Number(a.winner) - Number(b.winner)
+        },
     ];
+
+    useEffect(() => {
+        return () => {
+            fetchMovies(yearFilter, winnerFilter, initialPagination);
+        }
+
+    }, []);
 
     return (
         <div className="p-4 bg-[#3b3b3b] shadow rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-[#fff]">List movies</h2>
             {
-                error
-                    ? <p className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                error 
+                ? <p className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
                         <strong className="font-bold">Error: </strong>
                         <span className="block sm:inline">{error}</span>
                     </p>
                     :
                     <>
                         <div className="flex gap-4 items-center mb-4">
-                            <h4 className="text-[100%] font-bold text-white">Year Filter:</h4>
+                            <h4 className="text-[100%] font-bold text-white">Filter by Year:</h4>
                             <Input
-                                placeholder="Year filter"
+                                placeholder="Filter by Year"
                                 value={yearFilter}
                                 onChange={handleYearChange}
                                 className="w-48"
@@ -179,6 +126,7 @@ const WinnersList: React.FC = () => {
                                 onChange={handleWinnerChange}
                                 className="w-48"
                             >
+                                <Option value="">Yes/No</Option>
                                 <Option value="Yes">Yes</Option>
                                 <Option value="No">No</Option>
                             </Select>

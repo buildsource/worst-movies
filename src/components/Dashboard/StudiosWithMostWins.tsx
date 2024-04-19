@@ -1,3 +1,4 @@
+/* eslint-disable no-sparse-arrays */
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Table, TablePaginationConfig } from 'antd';
 import { IStudio } from '../../interfaces/Studio';
@@ -52,7 +53,7 @@ const StudiosWithMostWins: React.FC = () => {
 
     const columns = [
         {
-            title: 'Studio Name',
+            title: 'Name',
             dataIndex: 'name',
             key: 'name',
             sorter: (a: IStudio, b: IStudio) => a.name.localeCompare(b.name),

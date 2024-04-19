@@ -40,12 +40,12 @@ const ProducersWithWinInterval: React.FC = () => {
             key: 'interval',
         },
         {
-            title: 'Previous Win',
+            title: 'Previous Year',
             dataIndex: 'previousWin',
             key: 'previousWin',
         },
         {
-            title: 'Following Win',
+            title: 'Following Year',
             dataIndex: 'followingWin',
             key: 'followingWin',
         },
@@ -65,7 +65,7 @@ const ProducersWithWinInterval: React.FC = () => {
                             <h3 className="text-lg mb-2 text-white">Maximum</h3>
                             <Table
                                 columns={columns}
-                                dataSource={minData}
+                                dataSource={maxData}
                                 pagination={false}
                                 rowKey="producer"
                                 loading={loading}
@@ -77,7 +77,7 @@ const ProducersWithWinInterval: React.FC = () => {
                             <h3 className="text-lg mb-2 text-white">Minimum</h3>
                             <Table
                                 columns={columns}
-                                dataSource={maxData}
+                                dataSource={minData}
                                 pagination={false}
                                 rowKey="producer"
                                 loading={loading}
